@@ -1,0 +1,29 @@
+&CONTROL
+ calculation='relax',
+ pseudo_dir='/home/ayong/pslibrary-master/pbe/PSEUDOPOTENTIALS',
+/
+&SYSTEM
+ ibrav=0,
+ ntyp=2,
+ nat=3,
+ ecutwfc=50,
+/
+&ELECTRONS
+/
+&IONS
+/
+ATOMIC_SPECIES
+O 15.999 O.pbe-n-kjpaw_psl.1.0.0.UPF
+H 1.00784 H.pbe-kjpaw_psl.1.0.0.UPF
+
+ATOMIC_POSITIONS (angstrom)
+O	0.9237	0.9366	1.0272
+H	0.6449	0.5215	0.1971
+H	1.8916	0.9158	0.9856
+
+K_POINTS gamma
+
+CELL_PARAMETERS {angstrom}
+ 	30.00	0.00	0.00
+	0.00	30.00	0.00
+  	0.00  	0.00  	30.00

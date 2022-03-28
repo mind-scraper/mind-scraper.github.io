@@ -1,0 +1,31 @@
+&CONTROL
+ calculation='scf',
+ prefix='water',
+ pseudo_dir='/home/ayong/pslibrary-master/pbe/PSEUDOPOTENTIALS',
+/
+&SYSTEM
+ ibrav=0,
+ ntyp=2,
+ nat=3,
+ ecutwfc=50,
+/
+&ELECTRONS
+/
+&IONS
+/
+ATOMIC_SPECIES
+O 15.999 O.pbe-n-kjpaw_psl.1.0.0.UPF
+H 1.00784 H.pbe-kjpaw_psl.1.0.0.UPF
+
+ATOMIC_POSITIONS (angstrom)
+O             0.9238779155        0.9360196250        1.0268869462
+H             0.6424017739        0.5209474064        0.1957360008
+H             1.8939203107        0.9169329686        0.9872770530
+
+K_POINTS AUTOMATIC
+4 4 4 0 0 0 
+
+CELL_PARAMETERS {angstrom}
+ 	30.00	0.00	0.00
+	0.00	30.00	0.00
+  	0.00  	0.00  	30.00
