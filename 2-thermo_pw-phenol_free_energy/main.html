@@ -1,0 +1,1650 @@
+<!DOCTYPE html> 
+<html> 
+<head> <title>Calculating Gibbs Free Energy of Water
+using Thermo_w</title> 
+<meta charset="UTF-8" /> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)" /> 
+<link rel="stylesheet" type="text/css" href="main.css" /> 
+<!-- for beautifying --><link rel="stylesheet" type="text/css" href="site.css" /> 
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ extensions: ["tex2jax.js"], jax: ["input/TeX", "output/HTML-CSS"], tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], displayMath: [ ['$$','$$'], ["\\[","\\]"] ], processEscapes: true }, "HTML-CSS": { availableFonts: ["TeX"] } }); </script> <script type="text/javascript" 
+src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" 
+></script> 
+</head><body 
+>
+<p><a 
+href="#https://mind-scraper.github.io/">HOME</a> <br 
+class="newline" /><a 
+href="#https://mind-scraper.github.io/1-gifu_run/gifu_run.html">GIFU</a> <br 
+class="newline" />
+</p> 
+ <div class="maketitle">
+                                                                     
+
+                                                                     
+                                                                     
+
+                                                                     
+
+<h2 class="titleHead">Calculating Gibbs Free Energy of Water<br />
+using Thermo_pw</h2>
+<div class="author" ><span 
+class="cmr-12">spayongmasan</span></div>
+<br />
+<div class="date" ><span 
+class="cmr-12">March 28, 2022</span></div>
+</div>
+<p>This is a tutorial to calculate Gibbs free energy of Water molecule. We will use
+Thermo_pw package. It is a driver of quantum-ESPRESSO (QE) routines. We
+can use it for several jobs like convergence tests, phonon frequencies, electronic
+bands, elastic constants, Quassi-harmonic Approximation (QHA) properties, etc.
+You can read the description and any required information from <a 
+href="https://dalcorso.github.io/thermo_pw/" >Thermo_pw
+main page</a>.
+</p> 
+<p>This tutorial assumes:
+     </p> 
+<ol  class="enumerate1" >
+<li 
+  class="enumerate" id="x1-3x1">
+     <p>You already have QE along with Thermo_pw instaled in your system.
+     </p> 
+</li>
+<li 
+  class="enumerate" id="x1-5x2">
+     <p>You already have some basic skills for using QE in linux system.
+     </p> 
+</li>
+<li 
+  class="enumerate" id="x1-7x3">
+     <p>You already have some basic knowledge about QHA and any related
+     physical quantities.</p> 
+</li></ol>
+<p>There are two main steps of this tutorial. First, we relax the Water molecule
+                                                                     
+
+                                                                     
+using pw.x to get optimized geometry. Then we use this geometry to calculate
+the Gibbs free energy using thermo_pw.x.
+</p> 
+
+<div class="center" 
+>
+<p>
+</p> 
+<p>You can access all input and psudopotential files<br />
+of this tutorial in <a 
+href="https://github.com/mind-scraper/mind-scraper.github.io/tree/main/2-thermo_pw-water_free_energy/misc" >my github page</a>.</p> 
+</div>
+<h3 class="sectionHead"><span class="titlemark">1   </span> <a 
+ id="x1-10001"></a>Optimization</h3>
+<p>I provide a minimum keyword input file for relax calculation using pw.x. You can
+check <a 
+href="https://www.quantum-espresso.org/Doc/INPUT_PW.html#__top__" >pw.x input description</a> to add other preferable keywords.
+</p> 
+<p><pre>
+ <br /><span class="label"><a 
+ id="x1-1001r1"></a></span></p> 
+<!--l. 53--><pre class="listings"><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1002r2"></a></span><span 
+class="cmtt-10x-x-109">&#x0026;</span><span 
+class="cmtt-10x-x-109">CONTROL</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1003r3"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">calculation</span><span 
+class="cmtt-10x-x-109">=’</span><span 
+class="cmtt-10x-x-109">relax</span><span 
+class="cmtt-10x-x-109">’,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1004r4"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">pseudo_dir</span><span 
+class="cmtt-10x-x-109">=’/</span><span 
+class="cmtt-10x-x-109">home</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">ayong</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">pslibrary</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">master</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">pbe</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">PSEUDOPOTENTIALS</span><span 
+class="cmtt-10x-x-109">’,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1005r5"></a></span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1006r6"></a></span><span 
+class="cmtt-10x-x-109">&#x0026;</span><span 
+class="cmtt-10x-x-109">SYSTEM</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1007r7"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">ibrav</span><span 
+class="cmtt-10x-x-109">=0,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1008r8"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">ntyp</span><span 
+class="cmtt-10x-x-109">=2,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1009r9"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">nat</span><span 
+class="cmtt-10x-x-109">=3,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1010r10"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">ecutwfc</span><span 
+class="cmtt-10x-x-109">=50,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1011r11"></a></span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1012r12"></a></span><span 
+class="cmtt-10x-x-109">&#x0026;</span><span 
+class="cmtt-10x-x-109">ELECTRONS</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1013r13"></a></span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1014r14"></a></span><span 
+class="cmtt-10x-x-109">&#x0026;</span><span 
+class="cmtt-10x-x-109">IONS</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1015r15"></a></span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1016r16"></a></span><span 
+class="cmtt-10x-x-109">ATOMIC_SPECIES</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1017r17"></a></span><span 
+class="cmtt-10x-x-109">O</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">15.999</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">O</span><span 
+class="cmtt-10x-x-109">.</span><span 
+class="cmtt-10x-x-109">pbe</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">n</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">kjpaw_psl</span><span 
+class="cmtt-10x-x-109">.1.0.0.</span><span 
+class="cmtt-10x-x-109">UPF</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1018r18"></a></span><span 
+class="cmtt-10x-x-109">H</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">1.00784</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">H</span><span 
+class="cmtt-10x-x-109">.</span><span 
+class="cmtt-10x-x-109">pbe</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">kjpaw_psl</span><span 
+class="cmtt-10x-x-109">.1.0.0.</span><span 
+class="cmtt-10x-x-109">UPF</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1019r19"></a></span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1020r20"></a></span><span 
+class="cmtt-10x-x-109">ATOMIC_POSITIONS</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">(</span><span 
+class="cmtt-10x-x-109">angstrom</span><span 
+class="cmtt-10x-x-109">)</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1021r21"></a></span><span 
+class="cmtt-10x-x-109">O</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.9237</span><span 
+class="cmtt-10x-x-109">0.9366</span><span 
+class="cmtt-10x-x-109">1.0272</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1022r22"></a></span><span 
+class="cmtt-10x-x-109">H</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.6449</span><span 
+class="cmtt-10x-x-109">0.5215</span><span 
+class="cmtt-10x-x-109">0.1971</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1023r23"></a></span><span 
+class="cmtt-10x-x-109">H</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">1.8916</span><span 
+class="cmtt-10x-x-109">0.9158</span><span 
+class="cmtt-10x-x-109">0.9856</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1024r24"></a></span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1025r25"></a></span><span 
+class="cmtt-10x-x-109">K_POINTS</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">gamma</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1026r26"></a></span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1027r27"></a></span><span 
+class="cmtt-10x-x-109">CELL_PARAMETERS</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">{</span><span 
+class="cmtt-10x-x-109">angstrom</span><span 
+class="cmtt-10x-x-109">}</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1028r28"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">15.00</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.00</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.00</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1029r29"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.00</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">15.00</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.00</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1030r30"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.00</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.00</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">15.00</span>
+ <br /><span class="label"><a 
+ id="x1-1031r31"></a></span></pre>
+<p></pre>
+</p> 
+<p>Explanation of several important keywords are as follows.
+</p> 
+<p><code><span 
+class="cmtt-10x-x-109">calculation=’relax’,</span></code> This specify our calculation type that is structural
+optimization.
+</p> 
+<p><code><span 
+class="cmtt-10x-x-109">pseudo</span><span 
+class="cmtt-10x-x-109">_dir=’./’,</span></code> This specify that the pseudopotential files is in the same
+directory with the input file.
+</p> 
+<p><code><span 
+class="cmtt-10x-x-109">ibrav=0,</span></code> This is specify that we do not use any crystal structure, since our
+system is an isolated molecule.
+</p> 
+<p><code><span 
+class="cmtt-10x-x-109">ntyp=2, nat=3,</span></code> This specify that our system consist of 2 types of atoms (H and
+O) with total 3 atoms.
+</p> 
+<p><code><span 
+class="cmtt-10x-x-109">ecutwfc=50,</span></code> This specify that the kinetic energy cutoff used is 50 Ry. There is a
+minimum value recommended inside the pseudopotential file of each element.
+We should make sure that we use higher value than the recommended
+one. Or, it is better if we optimize this parameter. We can optimize it
+manually or automatically using Thermo_pw.x (you can found the tutorial
+<a 
+href="https://people.sissa.it/~dalcorso/thermo_pw/user_guide/node14.html" >here</a>).
+                                                                     
+
+                                                                     
+</p> 
+<p><code><span 
+class="cmtt-10x-x-109">O 15.999 O.pbe-n-kjpaw</span><span 
+class="cmtt-10x-x-109">_psl.1.0.0.UPF</span></code> This specify the symbol of the
+element, its atomic mass, and its pseudopotential, respectively. They are
+separated by at least one space. In this tutorial, we use projected augmented
+wave (PAW) pseudopotentials along with PBE functional. This information can
+be seen inside the pseudopotentials file.
+</p> 
+<p><code><span 
+class="cmtt-10x-x-109">ATOMIC</span><span 
+class="cmtt-10x-x-109">_POSITIONS (angstrom)</span></code> Several lines below this card specify the
+geometry of our system. For visualisation purposes, make sure that every atoms
+are in positive axes.
+</p> 
+<p><code><span 
+class="cmtt-10x-x-109">CELL</span><span 
+class="cmtt-10x-x-109">_PARAMETERS </span><span 
+class="cmsy-10x-x-109">{</span><span 
+class="cmtt-10x-x-109">angstrom</span><span 
+class="cmsy-10x-x-109">}</span></code> There lines below this card specify the geometry of our cell,
+that is a 15 Å <!--l. 103--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mo 
+class="MathClass-bin">×</mo></math>
+15 Å <!--l. 103--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mo 
+class="MathClass-bin">×</mo></math>
+15 Å box. This huge cell will limit the interaction between the periodic
+systems.
+</p> 
+<p>I save the input file as <code><span 
+class="cmtt-10x-x-109">water.relax.in</span></code>. However, any name and extension is
+OK. If you done everything right, you should can visualize the input file using
+<a 
+href="http://www.xcrysden.org/" >XCrySDen</a> program (see Figure <a 
+href="#x1-10321">1<!--tex4ht:ref: fig-water-input --></a>).
+</p> 
+<figure class="figure"> 
+
+                                                                     
+
+                                                                     
+<a 
+ id="x1-10321"></a>
+                                                                     
+
+                                                                     
+<p><img 
+src="fig-water-input.jpg" alt="PIC"  
+width="540" height="540"  />
+</p> 
+<figcaption class="caption" ><span class="id">Figure 1:</span><span  
+class="content">Visualization  of  the  pw.x  input  file  for  water  molecule  using
+<a 
+href="http://www.xcrysden.org/" >XCrySDen</a> program.</span></figcaption><!--tex4ht:label?: x1-10321 -->
+                                                                     
+
+                                                                     
+</figure>
+<p>Run the input file using pw.x program: <br 
+class="newline" /><code><span 
+class="cmtt-10x-x-109">pw.x &#x003C; water.relax.in &#x003E; water.relax.out</span></code>.<br 
+class="newline" />
+</p> 
+<p>Once the calculation done (denoted by line: <code><span 
+class="cmtt-10x-x-109">JOB DONE.</span></code>) and the relaxation
+converged (denoted by line: <code><span 
+class="cmtt-10x-x-109">bfgs converged</span></code>), we can extract the output
+geometry of our system. Make sure to take the geometry of the very last cycle of
+the calculations, that is the one written between <code><span 
+class="cmtt-10x-x-109">Begin final coordinates</span></code> and
+<code><span 
+class="cmtt-10x-x-109">End final coordinates</span></code>, as follows.
+</p> 
+<p><pre>
+ <br /><span class="label"><a 
+ id="x1-1033r1"></a></span></p> 
+<!--l. 122--><pre class="listings"><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1034r2"></a></span><span 
+class="cmtt-10x-x-109">Begin</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">final</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">coordinates</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1035r3"></a></span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1036r4"></a></span><span 
+class="cmtt-10x-x-109">ATOMIC_POSITIONS</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">(</span><span 
+class="cmtt-10x-x-109">angstrom</span><span 
+class="cmtt-10x-x-109">)</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1037r5"></a></span><span 
+class="cmtt-10x-x-109">O</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.9242104056</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.9361038386</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">1.0261204507</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1038r6"></a></span><span 
+class="cmtt-10x-x-109">H</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.6413561051</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.5206923851</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.1956086279</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1039r7"></a></span><span 
+class="cmtt-10x-x-109">H</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">1.8946334893</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.9171037763</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.9881709214</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-1040r8"></a></span><span 
+class="cmtt-10x-x-109">End</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">final</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">coordinates</span>
+ <br /><span class="label"><a 
+ id="x1-1041r9"></a></span></pre>
+<p></pre>
+</p> 
+<p>We use this coordinates to make the input file for thermo_pw.x which is
+explained in the next section.
+</p> 
+
+<h3 class="sectionHead"><span class="titlemark">2   </span> <a 
+ id="x1-20002"></a>Gibbs Free Energy Calculation</h3>
+<p>We need three input files for this section: an input file for (1) pw.x and (2) ph.x,
+as well as a file called (3) <code><span 
+class="cmtt-10x-x-109">thermo</span><span 
+class="cmtt-10x-x-109">_control</span></code>. File (1) will be used for an scf
+calculation for a fixed geometry obtained from the previous section. The result
+will be used for phonon calculation using file (2). And finally, file (3) will control
+the calculation for the Gibbs free energy. The details of each input file are as
+follows.
+                                                                     
+
+                                                                     
+</p> 
+<p>
+</p> 
+
+<h4 class="subsectionHead"><span class="titlemark">2.1   </span> <a 
+ id="x1-30002.1"></a>pw.x input file: water.scf_disp.in</h4>
+<p><pre>
+ <br /><span class="label"><a 
+ id="x1-3001r1"></a></span></p> 
+<!--l. 141--><pre class="listings"><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3002r2"></a></span><span 
+class="cmtt-10x-x-109">&#x0026;</span><span 
+class="cmtt-10x-x-109">CONTROL</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3003r3"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">calculation</span><span 
+class="cmtt-10x-x-109">=’</span><span 
+class="cmtt-10x-x-109">scf</span><span 
+class="cmtt-10x-x-109">’,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3004r4"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">prefix</span><span 
+class="cmtt-10x-x-109">=’</span><span 
+class="cmtt-10x-x-109">water</span><span 
+class="cmtt-10x-x-109">’,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3005r5"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">pseudo_dir</span><span 
+class="cmtt-10x-x-109">=’/</span><span 
+class="cmtt-10x-x-109">home</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">ayong</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">pslibrary</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">master</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">pbe</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">PSEUDOPOTENTIALS</span><span 
+class="cmtt-10x-x-109">’,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3006r6"></a></span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3007r7"></a></span><span 
+class="cmtt-10x-x-109">&#x0026;</span><span 
+class="cmtt-10x-x-109">SYSTEM</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3008r8"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">ibrav</span><span 
+class="cmtt-10x-x-109">=0,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3009r9"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">ntyp</span><span 
+class="cmtt-10x-x-109">=2,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3010r10"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">nat</span><span 
+class="cmtt-10x-x-109">=3,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3011r11"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">ecutwfc</span><span 
+class="cmtt-10x-x-109">=50,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3012r12"></a></span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3013r13"></a></span><span 
+class="cmtt-10x-x-109">&#x0026;</span><span 
+class="cmtt-10x-x-109">ELECTRONS</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3014r14"></a></span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3015r15"></a></span><span 
+class="cmtt-10x-x-109">&#x0026;</span><span 
+class="cmtt-10x-x-109">IONS</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3016r16"></a></span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3017r17"></a></span><span 
+class="cmtt-10x-x-109">ATOMIC_SPECIES</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3018r18"></a></span><span 
+class="cmtt-10x-x-109">O</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">15.999</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">O</span><span 
+class="cmtt-10x-x-109">.</span><span 
+class="cmtt-10x-x-109">pbe</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">n</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">kjpaw_psl</span><span 
+class="cmtt-10x-x-109">.1.0.0.</span><span 
+class="cmtt-10x-x-109">UPF</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3019r19"></a></span><span 
+class="cmtt-10x-x-109">H</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">1.00784</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">H</span><span 
+class="cmtt-10x-x-109">.</span><span 
+class="cmtt-10x-x-109">pbe</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">kjpaw_psl</span><span 
+class="cmtt-10x-x-109">.1.0.0.</span><span 
+class="cmtt-10x-x-109">UPF</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3020r20"></a></span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3021r21"></a></span><span 
+class="cmtt-10x-x-109">ATOMIC_POSITIONS</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">(</span><span 
+class="cmtt-10x-x-109">angstrom</span><span 
+class="cmtt-10x-x-109">)</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3022r22"></a></span><span 
+class="cmtt-10x-x-109">O</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.9242104056</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.9361038386</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">1.0261204507</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3023r23"></a></span><span 
+class="cmtt-10x-x-109">H</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.6413561051</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.5206923851</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.1956086279</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3024r24"></a></span><span 
+class="cmtt-10x-x-109">H</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">1.8946334893</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.9171037763</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.9881709214</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3025r25"></a></span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3026r26"></a></span><span 
+class="cmtt-10x-x-109">K_POINTS</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">AUTOMATIC</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3027r27"></a></span><span 
+class="cmtt-10x-x-109">1</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">1</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">1</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3028r28"></a></span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3029r29"></a></span><span 
+class="cmtt-10x-x-109">CELL_PARAMETERS</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">{</span><span 
+class="cmtt-10x-x-109">angstrom</span><span 
+class="cmtt-10x-x-109">}</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3030r30"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">15.00</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.00</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.00</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3031r31"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.00</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">15.00</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.00</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-3032r32"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.00</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">0.00</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">15.00</span>
+ <br /><span class="label"><a 
+ id="x1-3033r33"></a></span></pre>
+<p></pre>
+</p> 
+<p>Most of the keyword is the same with the previous section. The changes are as
+follows.
+</p> 
+<p><code> <span 
+class="cmtt-10x-x-109">calculation=’scf’,</span></code> This specify the calculation only for a single SCF.
+</p> 
+<p><code> <span 
+class="cmtt-10x-x-109">prefix=’water’,</span></code> This gives identity for the calculation files. These files will be
+called again in the ph.x calculation.
+</p> 
+<p><code><span 
+class="cmtt-10x-x-109">K</span><span 
+class="cmtt-10x-x-109">_POINTS AUTOMATIC</span></code> In this calculation we use a thicker k-point, that is
+<!--l. 183--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mn>4</mn> <mo 
+class="MathClass-bin">×</mo> <mn>4</mn> <mo 
+class="MathClass-bin">×</mo> <mn>4</mn></math> with
+no offset, than in the previous section. This will give a more accurate result, but
+with more computational cost, for ph.x calculation.
+</p> 
+<p>
+</p> 
+
+<h4 class="subsectionHead"><span class="titlemark">2.2   </span> <a 
+ id="x1-40002.2"></a>ph.x input file: ph_control</h4>
+<p><pre>
+ <br /><span class="label"><a 
+ id="x1-4001r1"></a></span></p> 
+<!--l. 187--><pre class="listings"><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-4002r2"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">&#x0026;</span><span 
+class="cmtt-10x-x-109">inputph</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-4003r3"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">prefix</span><span 
+class="cmtt-10x-x-109">=’</span><span 
+class="cmtt-10x-x-109">water</span><span 
+class="cmtt-10x-x-109">’,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-4004r4"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">fildyn</span><span 
+class="cmtt-10x-x-109">=’</span><span 
+class="cmtt-10x-x-109">water</span><span 
+class="cmtt-10x-x-109">.</span><span 
+class="cmtt-10x-x-109">dyn</span><span 
+class="cmtt-10x-x-109">.</span><span 
+class="cmtt-10x-x-109">xml</span><span 
+class="cmtt-10x-x-109">’,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-4005r5"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">ldisp</span><span 
+class="cmtt-10x-x-109">=.</span><span 
+class="cmtt-10x-x-109">TRUE</span><span 
+class="cmtt-10x-x-109">.</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-4006r6"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">nq1</span><span 
+class="cmtt-10x-x-109">=1,</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">nq2</span><span 
+class="cmtt-10x-x-109">=1,</span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">nq3</span><span 
+class="cmtt-10x-x-109">=1,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-4007r7"></a></span><span 
+class="cmtt-10x-x-109">/</span>
+ <br /><span class="label"><a 
+ id="x1-4008r8"></a></span></pre>
+<p></pre>
+                                                                     
+
+                                                                     
+</p> 
+<p>Explanation of each keyword are as follows.
+</p> 
+<p><code> <span 
+class="cmtt-10x-x-109">prefix=’water’</span></code> This should be the same with the one in the pw.x input
+file.
+</p> 
+<p><code> <span 
+class="cmtt-10x-x-109">fildyn=’water.dyn.xml’,</span></code> This specify the name of dynamical matrix
+file.
+</p> 
+<p><code> <span 
+class="cmtt-10x-x-109">ldisp=.TRUE., nq1=4, nq2=4, nq3=4,</span></code> This specify the phonon calculation
+for <!--l. 204--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mn>4</mn> <mo 
+class="MathClass-bin">×</mo> <mn>4</mn> <mo 
+class="MathClass-bin">×</mo> <mn>4</mn></math>
+q-points.
+</p> 
+<p>
+</p> 
+
+<h4 class="subsectionHead"><span class="titlemark">2.3   </span> <a 
+ id="x1-50002.3"></a>thermo_control</h4>
+<p><pre>
+ <br /><span class="label"><a 
+ id="x1-5001r1"></a></span></p> 
+<!--l. 208--><pre class="listings"><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-5002r2"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">&#x0026;</span><span 
+class="cmtt-10x-x-109">INPUT_THERMO</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-5003r3"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">what</span><span 
+class="cmtt-10x-x-109">=’</span><span 
+class="cmtt-10x-x-109">scf_disp</span><span 
+class="cmtt-10x-x-109">’,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-5004r4"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">lgnuplot</span><span 
+class="cmtt-10x-x-109">=.</span><span 
+class="cmtt-10x-x-109">TRUE</span><span 
+class="cmtt-10x-x-109">.,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-5005r5"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">find_ibrav</span><span 
+class="cmtt-10x-x-109">=.</span><span 
+class="cmtt-10x-x-109">TRUE</span><span 
+class="cmtt-10x-x-109">.,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-5006r6"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">tmin</span><span 
+class="cmtt-10x-x-109">=100,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-5007r7"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">tmax</span><span 
+class="cmtt-10x-x-109">=1000,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-5008r8"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">deltat</span><span 
+class="cmtt-10x-x-109">=100,</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-5009r9"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">pressure</span><span 
+class="cmtt-10x-x-109">=1.01325</span><span 
+class="cmtt-10x-x-109"> </span><br /><span class="label"><a 
+ id="x1-5010r10"></a></span><span 
+class="cmtt-10x-x-109"> </span><span 
+class="cmtt-10x-x-109">/</span>
+ <br /><span class="label"><a 
+ id="x1-5011r11"></a></span></pre>
+<p></pre>
+</p> 
+<p>Explanation of each keyword are as follows.
+</p> 
+<p><code> <span 
+class="cmtt-10x-x-109">what=’scf</span><span 
+class="cmtt-10x-x-109">_disp’,</span></code> This specify the calculation for the harmonic thermodynamic
+properties: vibrational energy, free energy, entropy, and constant strain heat
+capacity.
+</p> 
+<p><code> <span 
+class="cmtt-10x-x-109">lgnuplot=.TRUE.,</span></code> If you have a gnuplot installed in your computer, then this
+keyword will trigger the gnuplot to produce a plot for the calculated
+quantities.
+</p> 
+<p><code> <span 
+class="cmtt-10x-x-109">find</span><span 
+class="cmtt-10x-x-109">_ibrav=.TRUE.,</span></code> Since we use <code>  <span 
+class="cmtt-10x-x-109">ibrav=0,</span></code> in the pw.x input file, this
+keyword is needed to build an internal geometry within thermo_pw.x
+code.
+</p> 
+<p><code> <span 
+class="cmtt-10x-x-109">tmin=100, tmax=1000, deltat=100,</span></code> This specify the minimum, maximum,
+and interval temperature, respectively.
+</p> 
+<p><code> <span 
+class="cmtt-10x-x-109">pressure=1.01325</span></code> This specify the external pressure in kbar units. This value
+is equal to 1 atm.
+</p> 
+<p>Once all files are ready, we can perform the calculation using thermo_pw.x:
+<br 
+class="newline" /><code><span 
+class="cmtt-10x-x-109">thermo</span><span 
+class="cmtt-10x-x-109">_pw.x -ni 1 &#x003C; water.scf</span><span 
+class="cmtt-10x-x-109">_disp.in &#x003E; water.scf</span><span 
+class="cmtt-10x-x-109">_disp.out</span></code>.<br 
+class="newline" />This calculation is quite heavy so maybe it is necessary to use a parallel
+calculation, for instance using <code><span 
+class="cmtt-10x-x-109">mpirun</span></code>.
+</p> 
+<p>
+</p> 
+
+<h3 class="sectionHead"><span class="titlemark">3   </span> <a 
+ id="x1-60003"></a>The result</h3>
+<p>The calculation results is writen in <code><span 
+class="cmtt-10x-x-109">therm</span><span 
+class="cmtt-10x-x-109">_files/output</span><span 
+class="cmtt-10x-x-109">_therm.dat.g1</span></code>:
+</p> 
+<p><pre>
+<span 
+class="cmr-6"> </span><br /><span class="label"><a 
+ id="x1-6001r1"></a></span></p> 
+<!--l. 243--><pre class="listings"><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6002r2"></a></span><span 
+class="cmtt-8x-x-75">#</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">Zero</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">point</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">energy</span><span 
+class="cmtt-8x-x-75">:</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.04113</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">Ry</span><span 
+class="cmtt-8x-x-75">/</span><span 
+class="cmtt-8x-x-75">cell</span><span 
+class="cmtt-8x-x-75">,</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">53.99232</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">kJ</span><span 
+class="cmtt-8x-x-75">/(</span><span 
+class="cmtt-8x-x-75">N</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">mol</span><span 
+class="cmtt-8x-x-75">),</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">12.90447</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">kcal</span><span 
+class="cmtt-8x-x-75">/(</span><span 
+class="cmtt-8x-x-75">N</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">mol</span><span 
+class="cmtt-8x-x-75">)</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6003r3"></a></span><span 
+class="cmtt-8x-x-75">#</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">Temperature</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">T</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">in</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">K</span><span 
+class="cmtt-8x-x-75">,</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6004r4"></a></span><span 
+class="cmtt-8x-x-75">#</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">Total</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">number</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">of</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">states</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">is</span><span 
+class="cmtt-8x-x-75">:</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">5.89128,</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6005r5"></a></span><span 
+class="cmtt-8x-x-75">#</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">Energy</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">and</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">free</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">energy</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">in</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">Ry</span><span 
+class="cmtt-8x-x-75">/</span><span 
+class="cmtt-8x-x-75">cell</span><span 
+class="cmtt-8x-x-75">,</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6006r6"></a></span><span 
+class="cmtt-8x-x-75">#</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">Entropy</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">in</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">Ry</span><span 
+class="cmtt-8x-x-75">/</span><span 
+class="cmtt-8x-x-75">cell</span><span 
+class="cmtt-8x-x-75">/</span><span 
+class="cmtt-8x-x-75">K</span><span 
+class="cmtt-8x-x-75">,</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6007r7"></a></span><span 
+class="cmtt-8x-x-75">#</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">Heat</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">capacity</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">Cv</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">in</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">Ry</span><span 
+class="cmtt-8x-x-75">/</span><span 
+class="cmtt-8x-x-75">cell</span><span 
+class="cmtt-8x-x-75">/</span><span 
+class="cmtt-8x-x-75">K</span><span 
+class="cmtt-8x-x-75">.</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6008r8"></a></span><span 
+class="cmtt-8x-x-75">#</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">Multiply</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">by</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">13.6057</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">to</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">have</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">energies</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">in</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">eV</span><span 
+class="cmtt-8x-x-75">/</span><span 
+class="cmtt-8x-x-75">cell</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">etc</span><span 
+class="cmtt-8x-x-75">..</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6009r9"></a></span><span 
+class="cmtt-8x-x-75">#</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">Multiply</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">by</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">13.6057</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">x</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">23060.55</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">=</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">313754.7</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">to</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">have</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">energies</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">in</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">cal</span><span 
+class="cmtt-8x-x-75">/(</span><span 
+class="cmtt-8x-x-75">N</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">mol</span><span 
+class="cmtt-8x-x-75">).</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6010r10"></a></span><span 
+class="cmtt-8x-x-75">#</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">Multiply</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">by</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">13.6057</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">x</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">96485.33</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">=</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">1312749.8</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">to</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">have</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">energies</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">in</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">J</span><span 
+class="cmtt-8x-x-75">/(</span><span 
+class="cmtt-8x-x-75">N</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">mol</span><span 
+class="cmtt-8x-x-75">).</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6011r11"></a></span><span 
+class="cmtt-8x-x-75">#</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">N</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">is</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">the</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">number</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">of</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">formula</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">units</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">per</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">cell</span><span 
+class="cmtt-8x-x-75">.</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6012r12"></a></span><span 
+class="cmtt-8x-x-75">#</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">For</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">instance</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">in</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">silicon</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">N</span><span 
+class="cmtt-8x-x-75">=2.</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">Divide</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">by</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">N</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">to</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">have</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">energies</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">in</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">cal</span><span 
+class="cmtt-8x-x-75">/</span><span 
+class="cmtt-8x-x-75">mol</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">etc</span><span 
+class="cmtt-8x-x-75">.</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6013r13"></a></span><span 
+class="cmtt-8x-x-75">#</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">T</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">energy</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">free</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">energy</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">entropy</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">Cv</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6014r14"></a></span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.10000000</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">+03</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.423834475852</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-01</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.384923820814</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-01</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.389106550379</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.169694460863</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6015r15"></a></span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.20000000</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">+03</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.441451558086</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-01</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.339283606134</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-01</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.510839759759</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.179624885900</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6016r16"></a></span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.30000000</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">+03</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.459593412568</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-01</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.284288580445</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-01</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.584349440410</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.183336332123</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6017r17"></a></span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.40000000</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">+03</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.478196971310</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-01</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.223065581204</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-01</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.637828475266</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.189163404651</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6018r18"></a></span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.50000000</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">+03</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.497489840803</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-01</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.157066257241</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-01</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.680847167125</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.196894048491</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6019r19"></a></span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.60000000</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">+03</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.517599403879</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-01</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.871067386213</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-02</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.717487775430</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.205364022741</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6020r20"></a></span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.70000000</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">+03</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.538572252200</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-01</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.137121074625</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-02</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.749800206768</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.214133463037</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6021r21"></a></span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.80000000</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">+03</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.560433797448</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-01</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">-0.627492940703</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-02</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.778978864398</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.223132920112</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6022r22"></a></span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.90000000</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">+03</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.583204529630</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-01</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">-0.142004963852</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-01</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.805788326091</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.232300298536</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span><span 
+class="cmtt-8x-x-75"> </span><br /><span class="label"><a 
+ id="x1-6023r23"></a></span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.10000000</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">+04</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.606894948723</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-01</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">-0.223845214090</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-01</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.830740162812</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75"> </span><span 
+class="cmtt-8x-x-75">0.241499232497</span><span 
+class="cmtt-8x-x-75">E</span><span 
+class="cmtt-8x-x-75">-04</span>
+<span 
+class="cmr-6"> </span><br /><span class="label"><a 
+ id="x1-6024r24"></a></span></pre>
+<p></pre>
+</p> 
+<p>Note that the energies written in this file is the correction energies. That means,
+we need to sum it with the total electronic energy obtain from pw.x calculation
+to get for instance the total Gibbs free energy of the system. You can get the
+total electronic energy from <code><span 
+class="cmtt-10x-x-109">water.scf disp.out</span></code> file in the <code><span 
+class="cmtt-10x-x-109">! total energy = </span></code>
+line.
+</p> 
+<p>That’s all. Don’t forget your diner.
+</p> 
+
+<div class="center" 
+>
+<p>
+</p> 
+<p><span 
+class="cmr-9">This page is exported from LaTeX on Overleaf using </span><a 
+href="https://www.overleaf.com/latex/templates/testing-html-export-with-make4ht/rqcknjvwyyry" ><span 
+class="cmr-9">make4ht</span></a> <span 
+class="cmr-9">developed by </span><a 
+href="https://liantze.penguinattack.org/" ><span 
+class="cmr-9">LianTze Lim</span></a></p> 
+</div>
+ 
+</body> 
+</html>
+                                                                     
+
+                                                                     
+                                                                     
+
+
