@@ -1,0 +1,9 @@
+ &INPUT_THERMO
+  what='scf_disp',
+  lgnuplot=.TRUE.,
+  find_ibrav=.TRUE.,
+  tmin=100,
+  tmax=1000,
+  deltat=100,
+  pressure=1.01325
+ /
