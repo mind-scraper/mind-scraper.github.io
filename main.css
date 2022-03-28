@@ -1,6 +1,5 @@
  
 /* start css.sty */
-.cmr-10{font-size:90%;}
 .cmr-10x-x-109{}
 .cmbsy-10x-x-109{font-weight: bold;}
 .cmbsy-10x-x-109{font-weight: bold;}
@@ -29,7 +28,7 @@
 .cmsy-8{font-size:72%;}
 .cmsy-6{font-size:54%;}
 .cmr-17{font-size:154%;}
-.cmr-12{font-size:109%;}
+.cmr-9{font-size:81%;}
 p{margin-top:0;margin-bottom:0}
 p.indent{text-indent:0;}
 p + p{margin-top:1em;}
