@@ -1,7 +1,7 @@
 &CONTROL
  calculation='scf',
  prefix='water',
- pseudo_dir='/home/ayong/pslibrary-master/pbe/PSEUDOPOTENTIALS',
+ pseudo_dir='./',
 /
 &SYSTEM
  ibrav=0,
