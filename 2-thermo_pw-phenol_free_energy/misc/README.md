@@ -1,2 +1,1 @@
-This directory contains input and pseudopotential files used in the tutorial. 
-I put outputs for successful calculation in the "output" directory, just as a reference. 
+This directory contains input, output, and pseudopotential files of the tutorial. 
